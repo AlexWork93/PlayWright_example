@@ -17,6 +17,9 @@ RUN npx playwright install \
 # Switch back to the node user
 USER node
 
+# Create a directory for global npm packages
+RUN mkdir /home/node/.npm-global
+
 # Install global npm packages in user directory
 RUN npm install -g allure-commandline cucumber --prefix=/home/node/.npm-global \
     && export PATH=$PATH:/home/node/.npm-global/bin \
@@ -30,4 +33,3 @@ RUN chown -R node:node /usr/src/app
 
 # Command to run when the container starts
 CMD ["npm", "test"]
-
