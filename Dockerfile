@@ -14,7 +14,11 @@ RUN chown -R node:node /usr/src/app
 USER node
 
 # Install dependencies, excluding fsevents
-RUN npm install --unsafe-perm --ignore-scripts
+RUN npm install --unsafe-perm --ignore-scripts --no-optional
+
+# Create and set ownership for Playwright cache directory
+RUN mkdir -p /root/.cache/ms-playwright
+RUN chown -R node:node /root/.cache/ms-playwright
 
 # Switch back to the root user for the following installations
 USER root
@@ -27,10 +31,6 @@ RUN apt-get update && apt-get install -y openjdk-11-jdk nano
 
 # Install global npm packages
 RUN npm install -g allure-commandline cucumber
-
-# Create and set ownership for Playwright cache directory
-RUN mkdir -p /root/.cache/ms-playwright
-RUN chown -R node:node /root/.cache/ms-playwright
 
 # Switch back to the node user
 USER node
@@ -50,5 +50,4 @@ COPY . .
 
 # Command to run when the container starts
 CMD ["npm", "test"]
-
 
