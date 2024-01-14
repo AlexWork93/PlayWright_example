@@ -30,3 +30,4 @@ RUN chown -R node:node /usr/src/app
 
 # Command to run when the container starts
 CMD ["npm", "test"]
+
