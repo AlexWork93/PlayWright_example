@@ -1,31 +1,34 @@
-# Use the official Node.js image with tag 16
+# Use an official Node.js runtime as a parent image
 FROM node:16
 
 # Set the working directory to /usr/src/app
 WORKDIR /usr/src/app
 
-# Copy only the package files to leverage Docker cache
+# Copy package.json and package-lock.json to the working directory
 COPY package*.json ./
 
-# Install Playwright browsers and dependencies
+# Install Playwright dependencies
 RUN npx playwright install
 
-# Create a directory for global npm packages
-RUN mkdir -p /usr/local/nvm-global \
-    && chown -R node:node /usr/local/nvm-global \
-    && npm config set prefix /usr/local/nvm-global
+# Create a directory for the npm global packages
+RUN mkdir -p /home/node/.npm-global
 
-# Switch to the node user
+# Change the owner of the npm global directory to the node user
+RUN chown -R node:node /home/node/.npm-global
+
+# Set the npm global directory as the prefix for npm packages
 USER node
+ENV PATH=/home/node/.npm-global/bin:$PATH
+RUN npm config set prefix /home/node/.npm-global
 
 # Install global npm packages
 RUN npm install -g allure-commandline cucumber
 
-# Install application dependencies
-RUN npm install
+# Copy the local source files to the container
+COPY . .
 
-# Change ownership of the entire /usr/src/app directory to the node user
-RUN chown -R node:node /usr/src/app
+# Make port 8080 available to the world outside this container
+EXPOSE 8080
 
-# Command to run when the container starts
-CMD ["npm", "test"]
+# Run app.js when the container launches
+CMD ["node", "app.js"]
