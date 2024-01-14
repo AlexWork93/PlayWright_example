@@ -24,6 +24,13 @@ RUN npm config set prefix /home/node/.npm-global
 # Install global npm packages
 RUN npm install -g allure-commandline cucumber
 
+# Change the ownership of the application directory to the node user
+USER node
+RUN chown -R node:node /usr/src/app
+
+# Install application dependencies
+RUN npm install
+
 # Copy the local source files to the container
 COPY . .
 
