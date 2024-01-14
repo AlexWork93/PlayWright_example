@@ -11,6 +11,10 @@ pipeline {
                     sh 'docker run playwright-framework npm run test'
                     sh 'docker run playwright-framework allure generate allure-results --clean -o allure-report'
 
+                    // Debugging statements
+                    sh 'ls -la'  // Print contents of the workspace
+                    sh 'ls -la allure-report'  // Print contents of allure-report directory
+               
                     // sh 'sudo docker build -t playwright-framework .'
                     // sh 'sudo docker run playwright-framework npm run test'
                     // sh 'sudo docker run playwright-framework allure generate allure-results --clean -o allure-report'
@@ -24,15 +28,15 @@ pipeline {
     post {
         always {
             // Archive artifacts, if needed
-            archiveArtifacts 'allure-report'
-
+            archiveArtifacts 'workspace/allure-report/**'
+        
             // Publish Allure reports
             allure([
-                includeProperties: false,
-                jdk: '',
-                properties: [],
-                reportBuildPolicy: 'ALWAYS',
-                results: 'allure-report'
+            includeProperties: false,
+            jdk: '',
+            properties: [],
+            reportBuildPolicy: 'ALWAYS',
+            results: 'workspace/allure-report/'
             ])
         }
     }
