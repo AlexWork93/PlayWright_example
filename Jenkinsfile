@@ -6,10 +6,6 @@ pipeline {
             steps {
                 script {
                     // Build and run Playwright tests in a Docker container
-                    // Remove previous build
-                    sh 'docker stop 802866cc7803'
-                    sh 'docker rm 802866cc7803'
-                    sh 'docker rmi playwright-framework'
                     // Set up new build
                     sh 'docker build -t playwright-framework .'
                     sh 'docker run -v /var/lib/jenkins/workspace/playwright_docker:/usr/src/app playwright-framework npm install'
@@ -27,6 +23,8 @@ pipeline {
                     // Debugging statements
                     sh 'ls'  // Print contents of the workspace
                     sh 'ls -la allure-report'  // Print contents of allure-report directory
+
+                    sh 'docker rmi playwright-framework'
                
                 }
             }
