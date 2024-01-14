@@ -4,7 +4,15 @@ WORKDIR /usr/src/app
 
 COPY package*.json ./
 
+# Ensure npm global packages are installed in a location with proper permissions
+RUN mkdir -p /usr/src/app/.npm-global
+ENV NPM_CONFIG_PREFIX=/usr/src/app/.npm-global
+ENV PATH=$PATH:/usr/src/app/.npm-global/bin
+
 RUN npm install
+
+# Switch back to the default npm prefix
+ENV NPM_CONFIG_PREFIX=/usr/local
 RUN apt-get update && apt-get install -y openjdk-11-jdk
 RUN apt-get update && apt-get install -y nano
 RUN npm install -g allure-commandline
