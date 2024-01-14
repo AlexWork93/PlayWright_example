@@ -8,9 +8,8 @@ pipeline {
                     // Build and run Playwright tests in a Docker container
                     // Set up new build
                     sh 'docker build -t playwright-framework .'
-                    sh 'docker run -v /var/lib/jenkins/workspace/playwright_docker:/usr/src/app playwright-framework npm install'
-                    sh 'docker run -v /var/lib/jenkins/workspace/playwright_docker:/usr/src/app playwright-framework npx playwright install'
-
+                    sh 'docker run -v /var/lib/jenkins/workspace/playwright_docker:/usr/src/app playwright-framework sudo npm install'
+                    sh 'docker run -v /var/lib/jenkins/workspace/playwright_docker:/usr/src/app playwright-framework sudo npx playwright install'
                     // sh 'docker run playwright-framework npm run test'
                     // sh 'ls'  // Print contents of the workspace
 
