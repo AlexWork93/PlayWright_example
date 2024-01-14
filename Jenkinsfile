@@ -5,21 +5,12 @@ pipeline {
         stage('Run Playwright Tests') {
             steps {
                 script {
-                    // Pull and run Playwright Docker image, generate Allure reports
-                    // sh 'docker run -v $(pwd)/allure-results:/path/to/allure-results your-playwright-image'
+                    // Build and run Playwright tests in a Docker container
                     sh 'docker build -t playwright-framework .'
                     sh 'docker run playwright-framework npm run test'
-                    sh 'docker run playwright-framework allure generate allure-results --clean -o allure-report'
 
-                    // Debugging statements
-                    sh 'ls -la'  // Print contents of the workspace
-                    sh 'ls -la allure-report'  // Print contents of allure-report directory
-               
-                    // sh 'sudo docker build -t playwright-framework .'
-                    // sh 'sudo docker run playwright-framework npm run test'
-                    // sh 'sudo docker run playwright-framework allure generate allure-results --clean -o allure-report'
-
-                    // sh 'sudo docker run playwright-framework allure open allure-report'
+                    // Generate Allure report in the same Docker container
+                    sh 'docker run playwright-framework allure generate /path/to/allure-report --clean -o allure-report'
                 }
             }
         }
@@ -28,15 +19,15 @@ pipeline {
     post {
         always {
             // Archive artifacts, if needed
-            archiveArtifacts 'workspace/allure-report/**'
-        
+            archiveArtifacts 'allure-report/'
+
             // Publish Allure reports
             allure([
-            includeProperties: false,
-            jdk: '',
-            properties: [],
-            reportBuildPolicy: 'ALWAYS',
-            results: 'workspace/allure-report/'
+                includeProperties: false,
+                jdk: '',
+                properties: [],
+                reportBuildPolicy: 'ALWAYS',
+                results: 'allure-report/'
             ])
         }
     }
