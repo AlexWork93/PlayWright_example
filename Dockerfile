@@ -17,8 +17,10 @@ RUN npx playwright install \
 # Switch back to the node user
 USER node
 
-# Install global npm packages
-RUN npm install -g allure-commandline cucumber
+# Install global npm packages in user directory
+RUN npm install -g allure-commandline cucumber --prefix=/home/node/.npm-global \
+    && export PATH=$PATH:/home/node/.npm-global/bin \
+    && echo "export PATH=$PATH:/home/node/.npm-global/bin" >> /home/node/.bashrc
 
 # Install application dependencies
 RUN npm install
