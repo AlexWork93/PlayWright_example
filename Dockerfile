@@ -25,11 +25,6 @@ RUN echo "Y" | apt-get install libxrandr2
 RUN echo "Y" | apt-get install libgbm1
 RUN echo "Y" | apt-get install libasound2
 
-# Change ownership of relevant directories to the 'node' user
-RUN chown -R node:node /usr/src/app /root/.cache /root/.config
-
 COPY . .
-
-USER node  # Switch to the 'node' user
 
 CMD ["npm", "test"]
