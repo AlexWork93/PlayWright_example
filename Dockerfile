@@ -16,8 +16,6 @@ RUN npx playwright install
 
 USER root
 RUN echo "Y" | apt-get install -y libnss3
-USER node
-# RUN echo "Y" | apt-get install libnss3
 RUN echo "Y" | apt-get install libnspr4
 RUN echo "Y" | apt-get install libdbus-1-3
 RUN echo "Y" | apt-get install libatk1.0-0
@@ -31,6 +29,7 @@ RUN echo "Y" | apt-get install libxfixes3
 RUN echo "Y" | apt-get install libxrandr2
 RUN echo "Y" | apt-get install libgbm1
 RUN echo "Y" | apt-get install libasound2
+USER node
 
 COPY . .
 
