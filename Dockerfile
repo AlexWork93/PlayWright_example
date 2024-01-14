@@ -9,7 +9,10 @@ RUN apt-get update && apt-get install -y openjdk-11-jdk
 RUN apt-get update && apt-get install -y nano
 RUN npm install -g allure-commandline
 RUN npm install -g cucumber
-RUN su node -c "npx playwright install"
+RUN mkdir -p /root/.cache/ms-playwright
+RUN chown -R node:node /root/.cache/ms-playwright
+USER node
+RUN npx playwright install
 RUN echo "Y" | apt-get install libnss3
 RUN echo "Y" | apt-get install libnspr4
 RUN echo "Y" | apt-get install libdbus-1-3
