@@ -13,7 +13,11 @@ RUN mkdir -p /root/.cache/ms-playwright
 RUN chown -R node:node /root/.cache/ms-playwright
 USER node
 RUN npx playwright install
-RUN echo "Y" | apt-get install libnss3
+
+USER root
+RUN echo "Y" | apt-get install -y libnss3
+USER node
+# RUN echo "Y" | apt-get install libnss3
 RUN echo "Y" | apt-get install libnspr4
 RUN echo "Y" | apt-get install libdbus-1-3
 RUN echo "Y" | apt-get install libatk1.0-0
