@@ -2,19 +2,23 @@ pipeline {
     agent any
 
     stages {
-        stage('Run Playwright Tests') {
+        stage('Set up environment') {
             steps {
                 script {
-                    // Build and run Playwright tests in a Docker container
+                    // Build a Docker container
                     // Set up new build
                     sh 'docker build -t playwright-framework .'
                     sh 'docker run -v /var/lib/jenkins/workspace/playwright_docker:/usr/src/app playwright-framework npm install'
                     // sh 'docker run -v /var/lib/jenkins/workspace/playwright_docker:/usr/src/app playwright-framework npx playwright install'
-                    // sh 'docker run playwright-framework npm run test'
-                    // sh 'ls'  // Print contents of the workspace
+                
+                }
+            }
+        }
+        stage('Run Playwright Tests') {
+            steps {
+                script {
+                    // Run Playwright tests in a Docker container
 
-                    // Generate Allure report in the same Docker container
-                    // sh 'docker run playwright-framework allure generate allure-report --clean -o allure-report'
 
                     sh "docker run -v ${WORKSPACE}:/usr/src/app playwright-framework npm run test"
                     sh "docker run -v ${WORKSPACE}:/usr/src/app playwright-framework allure generate allure-report --clean -o allure-report"
@@ -24,6 +28,15 @@ pipeline {
                     sh 'ls'  // Print contents of the workspace
                     sh 'ls -la allure-report'  // Print contents of allure-report directory
 
+                    sh 'docker rmi playwright-framework'
+               
+                }
+            }
+        }
+        stage('Generate Allure report and Remove Docker Container') {
+            steps {
+                script {
+                    sh "docker run -v ${WORKSPACE}:/usr/src/app playwright-framework allure generate allure-report --clean -o allure-report"
                     sh 'docker rmi playwright-framework'
                
                 }
