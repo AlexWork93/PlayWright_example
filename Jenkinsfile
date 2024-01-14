@@ -20,7 +20,8 @@ pipeline {
                     // Run Playwright tests in a Docker container
 
 
-                    sh "docker run -v ${WORKSPACE}:/usr/src/app playwright-framework npm run test"
+                    // sh "docker run -v ${WORKSPACE}:/usr/src/app playwright-framework npm run test"
+                    sh 'docker run -v /var/lib/jenkins/workspace/playwright_docker:/usr/src/app -v /var/lib/jenkins/workspace/playwright_docker/node_modules:/usr/src/app/node_modules playwright-framework npm run test'
                     sh "docker run -v ${WORKSPACE}:/usr/src/app playwright-framework allure generate allure-report --clean -o allure-report"
 
 
