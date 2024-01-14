@@ -18,11 +18,11 @@ RUN mkdir -p /home/node/.npm-global \
 # Switch to the node user
 USER node
 
-# Install global npm packages
-RUN npm install -g allure-commandline cucumber
-
 # Install application dependencies
 RUN npm install
+
+# Install global npm packages in the user directory
+RUN npm install -g allure-commandline cucumber
 
 # Change ownership of the entire /usr/src/app directory to the node user
 RUN chown -R node:node /usr/src/app
