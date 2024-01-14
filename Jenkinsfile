@@ -7,11 +7,15 @@ pipeline {
                 script {
                     // Build and run Playwright tests in a Docker container
                     sh 'docker build -t playwright-framework .'
-                    sh 'docker run playwright-framework npm run test'
-                    sh 'ls'  // Print contents of the workspace
+                    // sh 'docker run playwright-framework npm run test'
+                    // sh 'ls'  // Print contents of the workspace
 
                     // Generate Allure report in the same Docker container
-                    sh 'docker run playwright-framework allure generate allure-report --clean -o allure-report'
+                    // sh 'docker run playwright-framework allure generate allure-report --clean -o allure-report'
+
+                    sh "docker run -v ${WORKSPACE}:/usr/src/app playwright-framework npm run test"
+                    sh "docker run -v ${WORKSPACE}:/usr/src/app playwright-framework allure generate allure-report --clean -o allure-report"
+
 
                     // Debugging statements
                     sh 'ls'  // Print contents of the workspace
