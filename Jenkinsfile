@@ -11,7 +11,8 @@ pipeline {
                     sh 'ls'  // Print contents of the workspace
 
                     // Generate Allure report in the same Docker container
-                    sh 'docker run playwright-framework allure generate allure-report --clean -o allure-report'
+                    // sh 'docker run playwright-framework allure generate allure-report --clean -o allure-report'
+                    sh 'allure generate allure-report --clean -o allure-report'
 
                     // Debugging statements
                     sh 'ls'  // Print contents of the workspace
