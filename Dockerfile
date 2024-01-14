@@ -1,20 +1,52 @@
-# Use an official Node runtime as a base image
+# Use the official Node.js image with tag 16
 FROM node:16
 
 # Set the working directory to /usr/src/app
 WORKDIR /usr/src/app
 
-# Copy package.json and package-lock.json to the working directory
+# Copy only the package files to leverage Docker cache
 COPY package*.json ./
 
-# Install dependencies
-RUN npm install
+# Change ownership of the directory to the node user
+RUN chown -R node:node /usr/src/app
 
-# Copy the entire project to the working directory
+# Switch to the node user
+USER node
+
+# Install dependencies, excluding fsevents
+RUN npm install --unsafe-perm --ignore-scripts --no-optional
+
+# Create and set ownership for Playwright cache directory
+RUN mkdir -p /home/node/.cache/ms-playwright
+RUN chown -R node:node /home/node/.cache/ms-playwright
+
+# Switch back to the root user for the following installations
+USER root
+
+# Switch back to the default npm prefix
+ENV NPM_CONFIG_PREFIX=/usr/local
+
+# Install additional dependencies
+RUN apt-get update && apt-get install -y openjdk-17-jdk nano
+
+# Install global npm packages
+RUN npm install -g allure-commandline cucumber
+
+# Switch back to the node user
+USER node
+
+# Install Playwright browsers
+RUN npx playwright install
+
+# Set ownership of the entire /usr/src/app directory
+USER root
+RUN chown -R node:node /usr/src/app
+
+# Switch back to the node user
+USER node
+
+# Copy the rest of the application code
 COPY . .
 
-# Expose the port used by your application (if applicable)
-# EXPOSE 3000
-
-# Specify the command to run on container start
+# Command to run when the container starts
 CMD ["npm", "test"]
