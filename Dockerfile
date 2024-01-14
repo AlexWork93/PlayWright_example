@@ -1,37 +1,30 @@
-# Use an official Node runtime as a parent image
 FROM node:16
 
-# Set the working directory in the container
 WORKDIR /usr/src/app
 
-# Copy package.json and package-lock.json to the container
 COPY package*.json ./
 
-# Install Playwright dependencies
+RUN npm install
+RUN apt-get update && apt-get install -y openjdk-11-jdk
+RUN apt-get update && apt-get install -y nano
+RUN npm install -g allure-commandline
 RUN npx playwright install
+RUN echo "Y" | apt-get install libnss3
+RUN echo "Y" | apt-get install libnspr4
+RUN echo "Y" | apt-get install libdbus-1-3
+RUN echo "Y" | apt-get install libatk1.0-0
+RUN echo "Y" | apt-get install libatk-bridge2.0-0
+RUN echo "Y" | apt-get install libcups2
+RUN echo "Y" | apt-get install libdrm2
+RUN echo "Y" | apt-get install libxkbcommon0
+RUN echo "Y" | apt-get install libxcomposite1
+RUN echo "Y" | apt-get install libxdamage1
+RUN echo "Y" | apt-get install libxfixes3
+RUN echo "Y" | apt-get install libxrandr2
+RUN echo "Y" | apt-get install libgbm1
+RUN echo "Y" | apt-get install libasound2
 
-# Create npm-global directory, change ownership, and set npm prefix
-RUN mkdir -p /home/node/.npm-global \
-    && chown -R node:node /home/node/.npm-global \
-    && npm config set prefix /home/node/.npm-global
 
-# Set the user to node
-USER node
+COPY . .
 
-# Set the PATH to include npm-global binaries
-ENV PATH=/home/node/.npm-global/bin:$PATH
-
-# Set npm prefix
-RUN npm config set prefix /home/node/.npm-global
-
-# Install global npm packages
-RUN npm install -g allure-commandline cucumber
-
-# Set the user back to node
-USER node
-
-# Change ownership of the working directory
-RUN chown -R node:node /usr/src/app
-
-# Print container ID
-CMD ["sh", "-c", "echo 'Container ID: ' && cat /proc/self/cgroup | grep 'docker' | sed 's/^.*\///'"]
+CMD ["npm", "test"]

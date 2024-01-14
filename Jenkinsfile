@@ -2,34 +2,20 @@ pipeline {
     agent any
 
     stages {
-        stage('Set up environment') {
-            steps {
-                script {
-                    // Build a Docker container
-                    sh 'docker build -t playwright-framework .'
-
-                    // Run npm install manually inside the container
-                    // sh 'docker run -v /var/lib/jenkins/workspace/playwright_docker:/usr/src/app playwright-framework /bin/sh -c "npm install"'
-                    sh 'docker run -v /var/lib/jenkins/workspace/playwright_docker:/usr/src/app playwright-framework /bin/sh -c npm install --unsafe-perm'
-
-                
-                }
-            }
-        }
         stage('Run Playwright Tests') {
             steps {
                 script {
-                    // Run Playwright tests in a Docker container
-                    sh 'docker run -v /var/lib/jenkins/workspace/playwright_docker:/usr/src/app playwright-framework npm run test'
-                }
-            }
-        }
-        stage('Generate Allure report and Remove Docker Container') {
-            steps {
-                script {
-                    sh "docker run -v ${WORKSPACE}:/usr/src/app playwright-framework allure generate allure-report --clean -o allure-report"
-                    sh 'docker rmi playwright-framework'
-               
+                    // Pull and run Playwright Docker image, generate Allure reports
+                    // sh 'docker run -v $(pwd)/allure-results:/path/to/allure-results your-playwright-image'
+                    sh 'docker build -t playwright-framework .'
+                    sh 'docker run playwright-framework npm run test'
+                    sh 'docker run playwright-framework allure generate allure-results --clean -o allure-report'
+
+                    // sh 'sudo docker build -t playwright-framework .'
+                    // sh 'sudo docker run playwright-framework npm run test'
+                    // sh 'sudo docker run playwright-framework allure generate allure-results --clean -o allure-report'
+
+                    // sh 'sudo docker run playwright-framework allure open allure-report'
                 }
             }
         }
@@ -38,7 +24,7 @@ pipeline {
     post {
         always {
             // Archive artifacts, if needed
-            archiveArtifacts 'allure-report'
+            archiveArtifacts 'allure-report/'
 
             // Publish Allure reports
             allure([
@@ -46,7 +32,7 @@ pipeline {
                 jdk: '',
                 properties: [],
                 reportBuildPolicy: 'ALWAYS',
-                results: ['allure-report']
+                results: 'allure-report/'
             ])
         }
     }
