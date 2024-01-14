@@ -7,20 +7,18 @@ WORKDIR /usr/src/app
 # Copy only the package files to leverage Docker cache
 COPY package*.json ./
 
-# Switch to the root user for package installation
-USER root
-
 # Install Playwright browsers and dependencies
-RUN npx playwright install \
-    && chown -R node:node /usr/src/app
+RUN npx playwright install
 
-# Switch back to the node user
+# Set npm prefix to a directory where the node user has write permissions
+RUN mkdir -p /home/node/.npm-global \
+    && chown -R node:node /home/node/.npm-global \
+    && npm config set prefix /home/node/.npm-global
+
+# Switch to the node user
 USER node
 
-# Set npm prefix to user directory
-RUN npm config set prefix /home/node/.npm-global
-
-# Install global npm packages in user directory
+# Install global npm packages
 RUN npm install -g allure-commandline cucumber
 
 # Install application dependencies
