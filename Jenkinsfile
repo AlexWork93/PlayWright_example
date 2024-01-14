@@ -6,6 +6,9 @@ pipeline {
             steps {
                 script {
                     // Build and run Playwright tests in a Docker container
+                    // Remove previous build
+                    sh 'docker rmi playwright-framework'
+                    // Set up new build
                     sh 'docker build -t playwright-framework .'
                     // sh 'docker run playwright-framework npm run test'
                     // sh 'ls'  // Print contents of the workspace

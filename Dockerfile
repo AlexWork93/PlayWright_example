@@ -28,4 +28,3 @@ RUN echo "Y" | apt-get install libasound2
 COPY . .
 
 CMD ["npm", "test"]
-
