@@ -6,18 +6,17 @@ pipeline {
             steps {
                 script {
                     // Build a Docker container
-                    // Set up new build
                     sh 'docker build -t playwright-framework .'
+
                     // Run npm install manually inside the container
                     sh 'docker run -v /var/lib/jenkins/workspace/playwright_docker:/usr/src/app playwright-framework /bin/sh -c "npm install"'
-                   
                 }
             }
         }
         stage('Run Playwright Tests') {
             steps {
                 script {
-                    // Run npm install manually inside the container
+                    // Run Playwright tests in a Docker container
                     sh 'docker run -v /var/lib/jenkins/workspace/playwright_docker:/usr/src/app playwright-framework npm run test'
                 }
             }
