@@ -7,7 +7,8 @@ pipeline {
                 script {
                     // Build and run Playwright tests in a Docker container
                     // Remove previous build
-                    sh 'docker stop playwright-framework'
+                    sh 'docker stop 802866cc7803'
+                    sh 'docker rm 802866cc7803'
                     sh 'docker rmi playwright-framework'
                     // Set up new build
                     sh 'docker build -t playwright-framework .'
