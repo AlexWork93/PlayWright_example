@@ -26,8 +26,8 @@ USER root
 # Switch back to the default npm prefix
 ENV NPM_CONFIG_PREFIX=/usr/local
 
-# Install additional dependencies
-RUN apt-get update && apt-get install -y openjdk-17-jdk nano
+# Install OpenJDK 11 and additional dependencies
+RUN apt-get update && apt-get install -y openjdk-11-jdk nano
 
 # Install global npm packages
 RUN npm install -g allure-commandline cucumber
