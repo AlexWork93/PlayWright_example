@@ -9,7 +9,10 @@ pipeline {
                     sh 'docker build -t playwright-framework .'
 
                     // Run npm install manually inside the container
-                    sh 'docker run -v /var/lib/jenkins/workspace/playwright_docker:/usr/src/app playwright-framework /bin/sh -c "npm install"'
+                    // sh 'docker run -v /var/lib/jenkins/workspace/playwright_docker:/usr/src/app playwright-framework /bin/sh -c "npm install"'
+                    sh 'docker run -v /var/lib/jenkins/workspace/playwright_docker:/usr/src/app playwright-framework /bin/sh -c npm install --unsafe-perm'
+
+                
                 }
             }
         }
