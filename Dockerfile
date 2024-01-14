@@ -26,7 +26,7 @@ USER root
 # Switch back to the default npm prefix
 ENV NPM_CONFIG_PREFIX=/usr/local
 
-# Install OpenJDK 11 and additional dependencies
+# Install additional dependencies
 RUN apt-get update && apt-get install -y openjdk-11-jdk nano
 
 # Install global npm packages
@@ -35,12 +35,11 @@ RUN npm install -g allure-commandline cucumber
 # Switch back to the node user
 USER node
 
+# Change ownership of the entire /usr/src/app directory to the node user
+RUN chown -R node:node /usr/src/app
+
 # Install Playwright browsers
 RUN npx playwright install
-
-# Set ownership of the entire /usr/src/app directory
-USER root
-RUN chown -R node:node /usr/src/app
 
 # Switch back to the node user
 USER node
