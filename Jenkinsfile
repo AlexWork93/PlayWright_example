@@ -1,45 +1,48 @@
 pipeline {
     agent any
+    
+    environment {
+        DOCKER_IMAGE = 'Playwright framework'
+    }
 
     stages {
-        stage('Set up environment') {
+        stage('Checkout') {
+            steps {
+                // Assuming your code is in a Git repository
+                checkout scm
+            }
+        }
+
+        stage('Build Docker Image') {
             steps {
                 script {
-                    // Build a Docker container
-                    // Set up new build
-                    sh 'docker build -t playwright-framework .'
-                    sh 'docker run -v /var/lib/jenkins/workspace/playwright_docker:/usr/src/app playwright-framework npm install'
-                    // sh 'docker run -v /var/lib/jenkins/workspace/playwright_docker:/usr/src/app playwright-framework npx playwright install'
-                
+                    // Build the Docker image
+                    docker.build DOCKER_IMAGE
                 }
             }
         }
-        stage('Run Playwright Tests') {
+
+        stage('Run Tests in Docker Container') {
             steps {
                 script {
-                    // Run Playwright tests in a Docker container
-
-
-                    // sh "docker run -v ${WORKSPACE}:/usr/src/app playwright-framework npm run test"
-                    sh 'docker run -v /var/lib/jenkins/workspace/playwright_docker:/usr/src/app -v /var/lib/jenkins/workspace/playwright_docker/node_modules:/usr/src/app/node_modules playwright-framework npm run test'
-                    sh "docker run -v ${WORKSPACE}:/usr/src/app playwright-framework allure generate allure-report --clean -o allure-report"
-
-
-                    // Debugging statements
-                    sh 'ls'  // Print contents of the workspace
-                    sh 'ls -la allure-report'  // Print contents of allure-report directory
-
-                    sh 'docker rmi playwright-framework'
-               
+                    // Run the tests inside the Docker container
+                    docker.image(DOCKER_IMAGE).inside {
+                        // Execute the commands needed to run your tests
+                        sh 'npm install'
+                        sh 'npm test'
+                    }
                 }
             }
         }
-        stage('Generate Allure report and Remove Docker Container') {
+
+        stage('Publish Allure Report') {
             steps {
                 script {
-                    sh "docker run -v ${WORKSPACE}:/usr/src/app playwright-framework allure generate allure-report --clean -o allure-report"
-                    sh 'docker rmi playwright-framework'
-               
+                    // Assuming Allure results are generated in a directory named 'allure-results'
+                    docker.image(DOCKER_IMAGE).inside {
+                        sh 'npm run allure-report'
+                        archiveArtifacts 'allure-report'
+                    }
                 }
             }
         }
@@ -47,17 +50,10 @@ pipeline {
 
     post {
         always {
-            // Archive artifacts, if needed
-            archiveArtifacts 'allure-report'
-
-            // Publish Allure reports
-            allure([
-                includeProperties: false,
-                jdk: '',
-                properties: [],
-                reportBuildPolicy: 'ALWAYS',
-                results: ['allure-report']
-            ])
+            // Clean up Docker resources
+            script {
+                docker.image(DOCKER_IMAGE).remove()
+            }
         }
     }
 }
