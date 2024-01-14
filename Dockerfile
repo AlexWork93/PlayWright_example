@@ -24,15 +24,18 @@ RUN npm config set prefix /home/node/.npm-global
 # Install global npm packages
 RUN npm install -g allure-commandline cucumber
 
+# Copy the local source files to the container
+COPY . .
+
 # Change the ownership of the application directory to the node user
-USER node
+USER root
 RUN chown -R node:node /usr/src/app
+
+# Switch back to the node user
+USER node
 
 # Install application dependencies
 RUN npm install
-
-# Copy the local source files to the container
-COPY . .
 
 # Make port 8080 available to the world outside this container
 EXPOSE 8080
