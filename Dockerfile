@@ -8,6 +8,7 @@ RUN npm install
 RUN apt-get update && apt-get install -y openjdk-11-jdk
 RUN apt-get update && apt-get install -y nano
 RUN npm install -g allure-commandline
+RUN npm install -g cucumber
 RUN npx playwright install
 RUN echo "Y" | apt-get install libnss3
 RUN echo "Y" | apt-get install libnspr4
@@ -24,7 +25,7 @@ RUN echo "Y" | apt-get install libxrandr2
 RUN echo "Y" | apt-get install libgbm1
 RUN echo "Y" | apt-get install libasound2
 
-
 COPY . .
 
 CMD ["npm", "test"]
+
