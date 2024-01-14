@@ -8,29 +8,17 @@ pipeline {
                     // Build a Docker container
                     // Set up new build
                     sh 'docker build -t playwright-framework .'
-                    sh 'docker run -v /var/lib/jenkins/workspace/playwright_docker:/usr/src/app playwright-framework npm install'
-                    // sh 'docker run -v /var/lib/jenkins/workspace/playwright_docker:/usr/src/app playwright-framework npx playwright install'
-                
+                    // Run npm install manually inside the container
+                    sh 'docker run -v /var/lib/jenkins/workspace/playwright_docker:/usr/src/app playwright-framework /bin/sh -c "npm install"'
+                   
                 }
             }
         }
         stage('Run Playwright Tests') {
             steps {
                 script {
-                    // Run Playwright tests in a Docker container
-
-
-                    // sh "docker run -v ${WORKSPACE}:/usr/src/app playwright-framework npm run test"
-                    sh 'docker run -v /var/lib/jenkins/workspace/playwright_docker:/usr/src/app -v /var/lib/jenkins/workspace/playwright_docker/node_modules:/usr/src/app/node_modules playwright-framework npm run test'
-                    sh "docker run -v ${WORKSPACE}:/usr/src/app playwright-framework allure generate allure-report --clean -o allure-report"
-
-
-                    // Debugging statements
-                    sh 'ls'  // Print contents of the workspace
-                    sh 'ls -la allure-report'  // Print contents of allure-report directory
-
-                    sh 'docker rmi playwright-framework'
-               
+                    // Run npm install manually inside the container
+                    sh 'docker run -v /var/lib/jenkins/workspace/playwright_docker:/usr/src/app playwright-framework npm run test'
                 }
             }
         }
