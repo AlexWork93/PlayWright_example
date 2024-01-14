@@ -24,9 +24,6 @@ RUN echo "Y" | apt-get install libxrandr2
 RUN echo "Y" | apt-get install libgbm1
 RUN echo "Y" | apt-get install libasound2
 
-# RUN npm run test
-# RUN allure generate allure-results --clean -o allure-report
-# RUN allure open allure-report
 
 COPY . .
 
