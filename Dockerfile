@@ -4,12 +4,17 @@ WORKDIR /usr/src/app
 
 COPY package*.json ./
 
-# Ensure npm global packages are installed in a location with proper permissions
-RUN mkdir -p /usr/src/app/.npm-global
-ENV NPM_CONFIG_PREFIX=/usr/src/app/.npm-global
-ENV PATH=$PATH:/usr/src/app/.npm-global/bin
+# Change ownership of the directory to the node user
+RUN chown -R node:node /usr/src/app
 
-RUN npm install
+# Switch to the node user
+USER node
+
+# Install dependencies, including global packages
+RUN npm install --unsafe-perm
+
+# Switch back to the root user for the following installations
+USER root
 
 # Switch back to the default npm prefix
 ENV NPM_CONFIG_PREFIX=/usr/local
