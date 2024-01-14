@@ -17,8 +17,8 @@ USER node
 RUN npm install --unsafe-perm --ignore-scripts --no-optional
 
 # Create and set ownership for Playwright cache directory
-RUN mkdir -p /root/.cache/ms-playwright
-RUN chown -R node:node /root/.cache/ms-playwright
+RUN mkdir -p /home/node/.cache/ms-playwright
+RUN chown -R node:node /home/node/.cache/ms-playwright
 
 # Switch back to the root user for the following installations
 USER root
@@ -40,7 +40,7 @@ RUN npx playwright install
 
 # Install additional dependencies
 USER root
-RUN echo "Y" | apt-get install -y libnss3 libnspr4 libdbus-1-3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libasound2
+RUN apt-get install -y libnss3 libnspr4 libdbus-1-3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 libgbm1 libasound2
 
 # Switch back to the node user
 USER node
@@ -50,4 +50,3 @@ COPY . .
 
 # Command to run when the container starts
 CMD ["npm", "test"]
-
