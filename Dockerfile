@@ -10,19 +10,19 @@ COPY package*.json ./
 # Install Playwright browsers and dependencies
 RUN npx playwright install
 
-# Set npm prefix to a directory where the node user has write permissions
-RUN mkdir -p /home/node/.npm-global \
-    && chown -R node:node /home/node/.npm-global \
-    && npm config set prefix /home/node/.npm-global
+# Create a directory for global npm packages
+RUN mkdir -p /usr/local/nvm-global \
+    && chown -R node:node /usr/local/nvm-global \
+    && npm config set prefix /usr/local/nvm-global
 
 # Switch to the node user
 USER node
 
+# Install global npm packages
+RUN npm install -g allure-commandline cucumber
+
 # Install application dependencies
 RUN npm install
-
-# Install global npm packages in the user directory
-RUN npm install -g allure-commandline cucumber
 
 # Change ownership of the entire /usr/src/app directory to the node user
 RUN chown -R node:node /usr/src/app
