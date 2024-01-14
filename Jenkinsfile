@@ -24,7 +24,7 @@ pipeline {
     post {
         always {
             // Archive artifacts, if needed
-            archiveArtifacts 'allure-report/'
+            archiveArtifacts 'allure-report'
 
             // Publish Allure reports
             allure([
@@ -32,7 +32,7 @@ pipeline {
                 jdk: '',
                 properties: [],
                 reportBuildPolicy: 'ALWAYS',
-                results: 'allure-report/'
+                results: 'allure-report'
             ])
         }
     }
