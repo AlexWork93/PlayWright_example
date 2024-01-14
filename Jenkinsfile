@@ -7,6 +7,7 @@ pipeline {
                 script {
                     // Pull and run Playwright Docker image, generate Allure reports
                     // sh 'docker run -v $(pwd)/allure-results:/path/to/allure-results your-playwright-image'
+                    sh 'docker rmi playwright-framework'
                     sh 'docker build -t playwright-framework .'
                     sh 'docker run playwright-framework npm run test'
                     sh 'docker run playwright-framework allure generate allure-results --clean -o allure-report'
