@@ -38,6 +38,9 @@ USER node
 # Change ownership of the entire /usr/src/app directory to the node user
 RUN chown -R node:node /usr/src/app
 
+# Install dependencies
+RUN npm install --unsafe-perm --ignore-scripts --no-optional --no-bin-links
+
 # Install Playwright browsers
 RUN npx playwright install
 
