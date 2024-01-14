@@ -13,8 +13,8 @@ RUN chown -R node:node /usr/src/app
 # Switch to the node user
 USER node
 
-# Install dependencies, including global packages
-RUN npm install --unsafe-perm
+# Install dependencies, excluding fsevents
+RUN npm install --unsafe-perm --ignore-scripts
 
 # Switch back to the root user for the following installations
 USER root
