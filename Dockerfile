@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y openjdk-11-jdk
 RUN apt-get update && apt-get install -y nano
 RUN npm install -g allure-commandline
 RUN npm install -g cucumber
-# RUN npx playwright install
+RUN npx playwright install
 RUN echo "Y" | apt-get install libnss3
 RUN echo "Y" | apt-get install libnspr4
 RUN echo "Y" | apt-get install libdbus-1-3
