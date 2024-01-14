@@ -12,6 +12,8 @@ pipeline {
                     sh 'docker rmi playwright-framework'
                     // Set up new build
                     sh 'docker build -t playwright-framework .'
+                    sh 'docker run -v /var/lib/jenkins/workspace/playwright_docker:/usr/src/app playwright-framework npm install'
+
                     // sh 'docker run playwright-framework npm run test'
                     // sh 'ls'  // Print contents of the workspace
 

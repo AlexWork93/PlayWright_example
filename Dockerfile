@@ -4,6 +4,8 @@ WORKDIR /usr/src/app
 
 COPY package*.json ./
 
+
+RUN npm install -g npm@latest
 RUN npm install
 RUN apt-get update && apt-get install -y openjdk-11-jdk
 RUN apt-get update && apt-get install -y nano
